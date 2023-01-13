@@ -51,18 +51,7 @@ dic = {0 : 'CER',
 def DRWAP_rate(im_path,seg_model,rate_model,print_DRWAP=True):
     ratio=np.array([[0,0],[1,0.1],[3,0.25],[5,0.5],[7,0.75],[9,1]])
     img=cv2.imread(im_path)
-    images,prediction,ims_crop,n_cluster,sortrois=pre_processing(im_path,seg_model)  #error !!
-    print("type ->>>>")
-    print(type(images))
-    print("type ->>>>")
-    print(type(prediction))
-    print("type ->>>>")
-    print(type(ims_crop))
-    print("type ->>>>")
-    print(type(n_cluster))
-    print("type ->>>>")
-    print(type(sortrois))
-
+    images,prediction,ims_crop,n_cluster,sortrois=pre_processing(im_path,seg_model)
     rates=[]
     for image in ims_crop:
         im2ar = np.asarray(image)
@@ -80,11 +69,6 @@ def DRWAP_rate(im_path,seg_model,rate_model,print_DRWAP=True):
         DRWAP=None
     else :
         (unique, counts) = np.unique(rates, return_counts=True)
-
-        print("<---- list of uniqe ---->")
-        print(unique)
-        print(len(unique))
-        print(unique.dtype.type)
         if(np.str_==unique.dtype.type) : 
             if not (unique[len(unique)-1].isnumeric()) :
                 unique = np.delete(unique, len(unique)-1)
@@ -95,8 +79,6 @@ def DRWAP_rate(im_path,seg_model,rate_model,print_DRWAP=True):
                 counts = np.delete(counts, len(unique)-1)
             print(len(unique))
         unique = unique.astype(int)
-        print(unique)
-        print(counts)
         ratio=np.array([x[1] for x in ratio if x[0] in unique ])
         DRWAP=np.sum(counts.T*ratio)/rates.shape[0]*100
 
@@ -168,7 +150,6 @@ def export_json(impath):
     try :
         rates_r,DRWAP_r,sortrois_r,impath,filename = rbg(impath)
         if(type(sortrois_r) != int) :
-            print("!!! this is if !!!!!!!!!!!")
             for i in range(sortrois_r.shape[0]):
                 js["earDetail"].append({"ID":str(i+1),"position":{"xlt":str(sortrois_r[i,0]),"ylt":str(sortrois_r[i,1]),"xrb":str(sortrois_r[i,2]),"yrb":str(sortrois_r[i,3])},"rate":str(rates_r[i])})
             js["predicted"].append({"DRWAP":str(DRWAP_r)})
@@ -195,7 +176,7 @@ def export_json(impath):
         outfile.write(json_object)
 
 export_json(r"D:\\CORN\\CORNGROUPS\\154.jpg")
-
+# export_json(sys.argv[1])
 
 # 30 82 83 86 87 89 115 131 145 153 156 156 178 215 240 241 242 243 248 250 253 254 259 275 268 282 287 
 # 297 330 337 338 346 371 391 412 479 500 514
@@ -203,6 +184,7 @@ export_json(r"D:\\CORN\\CORNGROUPS\\154.jpg")
 # export_json(sys.argv[1])
 
 ## 86, 87, 89, 115, 154, 250, 254, 259, 278, 287, 330 
+
 ## 87 index 3 is out of bounds for axis 0 with size 3
 
 # 'NoneType' object has no attribute 'dtype' 154
